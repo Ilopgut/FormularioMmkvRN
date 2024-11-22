@@ -76,6 +76,7 @@ export default function LoginForm({navigation}) {
                             onChangeText={handleChange('password')}
                             onBlur={handleBlur('password')}
                             placeholder="Contraseña"
+                            secureTextEntry={true}
                         />
                         {touched.password && errors.password && (
                             <Text style={{color: 'red'}}>{errors.password}</Text>

@@ -37,7 +37,7 @@ export default function Home({navigation}) {
   return (
     <View style={styles.container}>
         <View style={styles.HomeContent}>
-          <Text>Bienvenido</Text>
+          <Text style={styles.formTitle}>Bienvenido</Text>
           <Text>Nombre: {nombreUsuario}</Text>
           <Text>Contraseña: {passUsuario}</Text>
           <TouchableOpacity style={styles.closeSession} onPress={()=>{resetData()}}>
@@ -55,6 +55,11 @@ const styles = {
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:'#ddd',
+    },
+    formTitle:{
+        fontSize:20,
+        textAlign:'center',
+        marginTop:10,
     },
     HomeContent: {
         padding:10,
