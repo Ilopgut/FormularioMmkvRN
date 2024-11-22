@@ -1,7 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View,Button,TouchableOpacity,TextInput } from 'react-native';
+import { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const validationSchema = Yup.object().shape({
   fullName: Yup.string()
@@ -19,6 +22,8 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function LoginForm({navigation}) {
+  const [savedName, setSavedName] = useState('');
+
   return (
     <View style={styles.container}>
 
@@ -33,11 +38,25 @@ export default function LoginForm({navigation}) {
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values)=>{
-                  navigation.navigate('Welcome', { name: values.fullName });
+                  navigation.navigate('Home');
                 }}
             >
 
             {( {handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue} )=>{
+
+                const customHandleSubmit = async () => {
+                  if(!errors.fullName && !errors.password && values.fullName!='' && values.password!=''){
+                      try {
+                        await AsyncStorage.setItem('@nombre_usuario', values.fullName);
+                        await AsyncStorage.setItem('@password_usuario', values.password);
+                      } catch (e) {
+                        console.error('Error al guardar los datos:', e);
+                      }
+                  }
+
+                  // Ahora llamas a handleSubmit para que Formik maneje la validación y el envío
+                  handleSubmit();
+                };
                 return (
                     <View style={styles.formFields}>
                         <Text style={styles.formLabel}>Nombre de usuario</Text>
@@ -62,8 +81,8 @@ export default function LoginForm({navigation}) {
                             <Text style={{color: 'red'}}>{errors.password}</Text>
                         )}
 
-                        <TouchableOpacity style={styles.confirm} onPress={()=>{navigation.navigate('Home')}}>
-                            <Text style={{textAlign:'center',fontWeight:800,fontSize:17}}>Continuar</Text>
+                        <TouchableOpacity style={styles.confirm} onPress={()=>{customHandleSubmit()}}>
+                            <Text style={{textAlign:'center',fontWeight:800,fontSize:17,color:'#ddd'}}>Continuar</Text>
                         </TouchableOpacity>
 
                     </View>
@@ -100,7 +119,7 @@ const styles = {
         gap:3,
     },
     confirm:{
-        backgroundColor:'#ddaa00',
+        backgroundColor:'#008800',
         width:'100%',
         padding:10,
         borderRadius:10,
